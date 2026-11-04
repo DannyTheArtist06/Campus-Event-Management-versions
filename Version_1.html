@@ -1,0 +1,209 @@
+<html>
+    <head>
+        <title>Campus Event Management</title>
+        <style>
+            .image {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+<!--This is made by Durjay Tabiyar-->
+<!--This is a Campus Event Management System, where students can register for events and organizers can create events.-->
+<!--Registration no.: 12606351-->
+<!--This is a simple version of the system, where students can register for events and organizers can create events.-->
+
+
+
+
+
+    <body>
+        <img class= "image" src="LPU.png" alt="Not Loading" width="200" height="100">
+
+        <p id="demo"></p>   <br>
+        <p id="demo_2"></p> <br>
+<hr>
+    <form id="000">
+        <fieldset>
+        <legend>Please Select Your Position</legend><br>
+        <select id="select">
+            <option value="null">Select</option>
+            <option value="001">Student</option>
+            <option value="002">Organizer</option>
+        </select>
+            <br><br>
+            <!--Will be removed in finale version <br><br>
+            <label for="limit">Registration limit: <input type="range" id="limit" min="10" max="200" value="50"></label> <br><br>
+            <output id ='470' for="limit">50</output> <br><br>-->           
+        <button type="submit">Submit</button>
+        </fieldset>
+    </form>
+<!--Login Part-->
+    <div style="display: none" id="100">
+        <form id="login">
+            <label>Registration Number: <input type="text" id="110" name="registration_number"></label> <br><br>
+            <label>Password: <input type="password" id="120" name="password"></label> <br><br>
+            <button type="submit" id="130">Confirm</button>
+        </form>
+    </div>
+
+
+
+<!--Student Registration
+Part-->
+    <div style="display: none" id="200">
+        <form id="student_registration">
+            <label >Name: <input type="text" id="210" name="Name"></label> <br><br>
+            <label >Registration Number: <input type="text" id="220" name="registration_number"></label> <br><br>
+            <label>Phone Number: <input type="number" id="230" maxlength="8" name="phone_number"></label> <br><br>
+            <label>Qualification: <input type="text" id="240" name="qualification"></label>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    </body>
+<!--Student List of Events Participated-->
+
+
+
+
+<!--Organizer Part-->
+<!--Choose Type -->
+<div style="display: none" id="300">
+    <form >
+        <legend>Choose</legend>
+            <select id="select_2">
+                <option value="null">Select</option>
+                <option value="301">Create Event</option>
+                <option value="302">Check Event</option>
+            </select>
+            <button type="submit">Submit</button>
+    </form>
+</div>
+<!--Creating Event-->
+    <div style="display: none" id="400">
+        <form id="organizer_form">
+            <label >Type of Event: <input type="text" id="410" name="type_of_event"></label> <br><br>
+            <label >Discription: <br><br><textarea id="420" rows="10" cols="40" name="description"> </textarea></label> <br><br><br>
+            <label >Venue: <input type="text" id="430" name="venue"></label> <br><br>
+            <label >Eligibilty Criteria: <input type="text" id="440" name="eligibility_criteria"></label> <br><br>
+            <label >Date of Registration, from: <input type="date" id="450" name="registration_from">to: <input type="date" id="451" name="registration_to"></label> <br><br>
+            <label >Time of entry & date, from: <input type="datetime-local" id="460" name="entry_from">to: <input type="datetime-local" id="461" name="entry_to"></label> <br><br>
+            <label for="limit">Registration limit: <input type="range" id="limit" min="10" max="200" value="50" name="Registration_limit"></label> <br><br>
+            <output id ='470' for="limit">50</output> <br><br>
+            <label >Unique Code: <input type="number" id="480" maxlength="10" name="unique_code"></label>
+            <button type="submit">Submit</button>
+
+
+        </form>
+    </div>
+<!--Check Event-->
+    <div style="display: none" id="500">
+        <form id="checking_my_events">
+            <label> Done!!, Probably</label><br><br>
+            <label> Enter Unique Code: <input type="number" id="510" name="unique_code"></label>
+            <button type="submit">Submit</button>
+            <!--Checking list of Events-->
+        </form>
+    </div>
+
+    <script>
+        let a = document.getElementById('limit');
+        let b = document.getElementById('470');
+        a.oninput= function() { b.textContent=this.value;};
+
+
+        let select= document.getElementById('select');
+        let position= select.value;
+        console.warn(position);        
+
+
+        document.getElementById('000').addEventListener('submit', function(e){
+            e.preventDefault();
+            
+            let position= select.value;
+            console.warn(position);
+            
+            if (position=='001'){
+                document.getElementById('000').style.display= "none";
+                document.getElementById('100').style.display= "block";
+            }
+            else if (position=='002'){
+                    let id= document.getElementById('select_2');
+                    let pos= id.value;
+                    let current= document.getElementById('000').style.display= "none";
+                    let new_form= document.getElementById('300').style.display= "block";
+                   
+                    document.getElementById('300').addEventListener('submit', function(e){
+                        e.preventDefault();
+                        let pos= id.value;
+                        if (pos=='301'){
+                            let current= document.getElementById('300').style.display= "none";
+                            let new_form= document.getElementById('400').style.display= "block";
+                        }
+                        else if (pos=='302'){
+                            let current= document.getElementById('300').style.display= "none";
+                            let new_form= document.getElementById('500').style.display= "block";
+                        }
+
+                    })
+            }
+        })
+
+<!--form data collection-->
+
+function get_saved_data(storage_key){
+    let saved_data= localStorage.getItem(storage_key);
+    return saved_data ? JSON.parse(saved_data) : [];
+}
+
+function save_data(storage_key, form_values){
+    let saved_data= get_saved_data(storage_key);
+    saved_data.push(form_values);
+    localStorage.setItem(storage_key, JSON.stringify(saved_data));
+}
+
+function collect_data(form_id, on_submit = null, reload_after_submit = false, storage_key = null){
+    let form_data= document.getElementById(form_id);
+    form_data.addEventListener('submit', function(e){
+        e.preventDefault();
+        let form_keys= new FormData(form_data);
+        let form_values= Object.fromEntries(form_keys.entries());
+
+        if (storage_key){
+            save_data(storage_key, form_values);
+        }
+
+        if (on_submit){
+            on_submit();
+        } else if (reload_after_submit){
+            window.location.reload();
+        }
+    })
+}
+collect_data('login', function(){
+    document.getElementById('100').style.display= "none";
+    document.getElementById('200').style.display= "block";
+});
+collect_data('student_registration', null, true, 'student_registrations');
+collect_data('organizer_form', null, true, 'events');
+
+document.getElementById('demo').innerHTML= "Total Student Registrations: " + get_saved_data('student_registrations').length + "<br>" + "Total Events Created: " + get_saved_data('events').length;
+
+<!--Checking Event-->
+
+document.addEventListener('submit', function(e){
+    e.preventDefault();
+    let saved_events= get_saved_data('events');      
+    if (saved_events.find(event => event.unique_code === document.getElementById('510').value)){
+        document.getElementById('demo_2').innerHTML= "Event Found!";
+        window.location.reload();
+    } else {
+        document.getElementById('demo_2').innerHTML= "Event Not Found!";
+    }
+});  
+
+    </script>
+
+</html>
