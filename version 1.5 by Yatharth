@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Campus Event Management</title>
+<style>
+body{font-family:Arial;background:#eee;margin:0;padding:0}
+.main{width:80%;margin:auto;background:white;padding:20px;min-height:90vh}
+h1{text-align:center;color:darkblue}
+img{display:block;margin:auto;width:100px}
+form{margin-top:20px;padding:15px;border:1px solid #aaa}
+input,select,textarea{padding:7px;margin:7px 0;width:95%;box-sizing:border-box}
+button{padding:9px 20px;background:navy;color:white;border:0;cursor:pointer;margin-top:10px}
+button:hover{background:blue}
+.hide{display:none}
+.section{margin-top:25px}
+.message{color:green;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="main">
+<img src="LPU.png" alt="LPU Logo">
+<h1>Campus Event Management System</h1>
+<p style="text-align:center;">Welcome to Campus Event Management</p>
+<hr>
+<div id="role_section">
+<h3>Select your role</h3>
+<form id="role_form">
+<label>Select Role:</label>
+<select id="role" required>
+<option value="">Select</option>
+<option value="student">Student</option>
+<option value="organizer">Organizer</option>
+</select>
+<button type="submit">Continue</button>
+</form>
+</div>
+<div id="login_section" class="hide">
+<h3>Login</h3>
+<form id="login_form">
+<label>Email:</label><input type="email" id="login_email" required>
+<label>Password:</label><input type="password" id="login_password" required>
+<button type="submit">Login</button>
+</form>
+<p id="login_msg" class="message"></p>
+</div>
+<div id="student_section" class="hide">
+<h3>Student Registration</h3>
+<form id="student_registration">
+<label>Student Name:</label><input type="text" id="student_name" required>
+<label>Registration Number:</label><input type="text" id="reg_no" required>
+<label>Email:</label><input type="email" id="student_email" required>
+<label>Phone Number:</label><input type="tel" id="student_phone">
+<label>Course:</label>
+<select id="course">
+<option>B.Tech CSE</option><option>B.Tech IT</option><option>BCA</option><option>MCA</option><option>Other</option>
+</select>
+<button type="submit">Register</button>
+</form>
+<p id="student_msg" class="message"></p>
+</div>
+<div id="organizer_section" class="hide">
+<h3>Organizer Panel</h3>
+<button onclick="showCreate()">Create Event</button>
+<button onclick="showCheck()">Check Event</button>
+</div>
+<div id="create_event" class="hide">
+<h3>Create New Event</h3>
+<form id="organizer_form">
+<label>Event Name:</label><input type="text" id="event_name" required>
+<label>Event Type:</label>
+<select id="event_type">
+<option>Technical</option><option>Cultural</option><option>Sports</option><option>Workshop</option><option>Other</option>
+</select>
+<label>Description:</label><textarea id="event_description" rows="4"></textarea>
+<label>Venue:</label><input type="text" id="event_venue">
+<label>Eligibility:</label><input type="text" id="eligibility">
+<label>Registration Last Date:</label><input type="date" id="last_date">
+<label>Event Date:</label><input type="date" id="event_date">
+<label>Registration Limit:</label>
+<input type="range" id="limit" min="10" max="500" value="100" oninput="document.getElementById('limit_value').innerHTML=this.value">
+<p>Limit: <span id="limit_value">100</span></p>
+<button type="submit">Create Event</button>
+</form>
+<p id="event_msg" class="message"></p>
+</div>
+<div id="check_event" class="hide">
+<h3>Check Event Details</h3>
+<form id="checking_my_events">
+<label>Enter Event Code:</label><input type="text" id="event_code">
+<button type="submit">Search</button>
+</form>
+<div id="event_result"></div>
+<p>Event checking feature is still under development.</p>
+</div>
+<div id="event_list" class="section">
+<h3>Available Events</h3>
+<p>Event list will be displayed here.</p>
+<!-- TODO: Add event cards here -->
+</div>
+<hr>
+<p style="text-align:center;">Campus Event Management System | Project Work</p>
+</div>
+<script>
+var role_section=document.getElementById("role_section");
+var login_section=document.getElementById("login_section");
+var student_section=document.getElementById("student_section");
+var organizer_section=document.getElementById("organizer_section");
+var create_event=document.getElementById("create_event");
+var check_event=document.getElementById("check_event");
+var student_data=JSON.parse(localStorage.getItem("student_registrations"))||[];
+var events=JSON.parse(localStorage.getItem("events"))||[];
+function hideAll(){
+role_section.classList.add("hide");
+login_section.classList.add("hide");
+student_section.classList.add("hide");
+organizer_section.classList.add("hide");
+create_event.classList.add("hide");
+check_event.classList.add("hide");
+}
+document.getElementById("role_form").addEventListener("submit",function(e){
+e.preventDefault();
+var selected_role=document.getElementById("role").value;
+hideAll();
+if(selected_role=="student"){student_section.classList.remove("hide");}
+else if(selected_role=="organizer"){login_section.classList.remove("hide");}
+});
+document.getElementById("login_form").addEventListener("submit",function(e){
+e.preventDefault();
+var email=document.getElementById("login_email").value;
+var password=document.getElementById("login_password").value;
+if(email!=""&&password!=""){
+login_section.classList.add("hide");
+organizer_section.classList.remove("hide");
+}
+document.getElementById("login_msg").innerHTML="Login successful (demo mode)";
+});
+document.getElementById("student_registration").addEventListener("submit",function(e){
+e.preventDefault();
+var name=document.getElementById("student_name").value;
+var reg=document.getElementById("reg_no").value;
+var email=document.getElementById("student_email").value;
+var phone=document.getElementById("student_phone").value;
+var course=document.getElementById("course").value;
+var student={name:name,registration:reg,email:email,phone:phone,course:course};
+student_data.push(student);
+localStorage.setItem("student_registrations",JSON.stringify(student_data));
+document.getElementById("student_msg").innerHTML="Registration submitted successfully!";
+document.getElementById("student_registration").reset();
+});
+function showCreate(){
+create_event.classList.remove("hide");
+check_event.classList.add("hide");
+}
+function showCheck(){
+check_event.classList.remove("hide");
+create_event.classList.add("hide");
+}
+document.getElementById("organizer_form").addEventListener("submit",function(e){
+e.preventDefault();
+var name=document.getElementById("event_name").value;
+var type=document.getElementById("event_type").value;
+var description=document.getElementById("event_description").value;
+var venue=document.getElementById("event_venue").value;
+var eligibility=document.getElementById("eligibility").value;
+var last_date=document.getElementById("last_date").value;
+var date=document.getElementById("event_date").value;
+var limit=document.getElementById("limit").value;
+var code="EVT"+Math.floor(Math.random()*10000);
+var event={event_name:name,event_type:type,description:description,venue:venue,eligibility:eligibility,last_date:last_date,event_date:date,limit:limit,event_code:code};
+events.push(event);
+localStorage.setItem("events",JSON.stringify(events));
+document.getElementById("event_msg").innerHTML="Event created! Your event code is: "+code;
+document.getElementById("organizer_form").reset();
+});
+document.getElementById("checking_my_events").addEventListener("submit",function(e){
+e.preventDefault();
+var code=document.getElementById("event_code").value;
+var found=false;
+for(var i=0;i<events.length;i++){
+if(events[i].event_code==code){
+document.getElementById("event_result").innerHTML="<h4>"+events[i].event_name+"</h4><p>Type: "+events[i].event_type+"</p><p>Venue: "+events[i].venue+"</p>";
+found=true;
+break;
+}
+}
+if(found==false){document.getElementById("event_result").innerHTML="Event not found. Please check the code.";}
+});
+// TODO: display all events on the main page
+// TODO: add proper organizer authentication
+// TODO: add edit and delete event options
+// TODO: connect this project with a database
+// TODO: complete student dashboard
+</script>
+</body>
+</html>
